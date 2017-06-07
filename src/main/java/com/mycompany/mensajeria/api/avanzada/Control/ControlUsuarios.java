@@ -5,10 +5,18 @@
  */
 package com.mycompany.mensajeria.api.avanzada.Control;
 
+import com.mycompany.mensajeria.api.avanzada.Dao.DaoUsuarios;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 /**
  *
  * @author fefe
  */
+@Controller
+
 public class ControlUsuarios {
     
+    @Autowired
+    private DaoUsuarios acceso;
 }
