@@ -21,23 +21,23 @@ public class DaoUsuarios {
         lista=new ArrayList<Usuario>();
     }
     
-    private void cargarUsuario(Usuario user)
+    public void cargarUsuario(Usuario user)
     {
         lista.add(user);
     }
     
-    private void eliminarUsuario(Usuario user)
+    public void eliminarUsuario(Usuario user)
     {
         lista.remove(user);
     }
     
-    private Usuario traerUsuarioPorId(String nickname)
+    public Usuario traerUsuarioPorId(int id)
     {
         Usuario objU=new Usuario();
         
         for(Usuario user:lista)
         {
-            if(nickname.equals(user.getNickName()))
+            if(id==objU.getId())
             {
                 objU=user;
             }
@@ -45,7 +45,7 @@ public class DaoUsuarios {
         return objU;
     }
     
-    private Usuario traerUsuarioIdentico(Usuario u)
+    public Usuario traerUsuarioIdentico(Usuario u)
     {
         Usuario objU=new Usuario();
         
