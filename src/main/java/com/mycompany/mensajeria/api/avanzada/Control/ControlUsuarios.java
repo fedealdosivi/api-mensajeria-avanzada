@@ -1,63 +1,51 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.mensajeria.api.avanzada.Control;
 
-import com.mycompany.mensajeria.api.avanzada.Dao.DaoUsuarios;
 import com.mycompany.mensajeria.api.avanzada.Model.Usuario;
-import java.util.ArrayList;
+import com.mycompany.mensajeria.api.avanzada.Service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- *
- * @author fefe
- */
-@Controller
+import java.util.List;
 
+@RestController
+@RequestMapping("/api")
 public class ControlUsuarios {
-    
+
+    private final UsuarioService usuarioService;
+
     @Autowired
-    private DaoUsuarios acceso;
-    
-      @RequestMapping(value = "/",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ArrayList<Usuario> traerTodos()
-    {
-        return acceso.traerTodos();
+    public ControlUsuarios(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    @RequestMapping(value = "/Usuario/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public Usuario userPorId(@PathVariable("id") Integer id){
-        try{
-        return acceso.traerUsuarioPorId(id);
-        }
-        catch(Exception e)
-        {
-            e.getStackTrace();
-            return null;
-        }
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<Usuario>> traerTodos() {
+        List<Usuario> usuarios = usuarioService.traerTodos();
+        return ResponseEntity.ok(usuarios);
     }
 
-    @RequestMapping(value="/Usuario", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity agregarUsuario(@RequestBody Usuario usuario)
-    {
-        try {
-            acceso.cargarUsuario(usuario);
-            return new ResponseEntity(HttpStatus.CREATED);
-        }catch (Exception e)
-        {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<Usuario> userPorId(@PathVariable Integer id) {
+        return usuarioService.traerUsuarioPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    @PostMapping("/usuario")
+    public ResponseEntity<Usuario> agregarUsuario(@Valid @RequestBody Usuario usuario) {
+        Usuario nuevoUsuario = usuarioService.cargarUsuario(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+    }
+
+    @DeleteMapping("/usuario/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
+        if (usuarioService.traerUsuarioPorId(id).isPresent()) {
+            usuarioService.eliminarUsuario(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

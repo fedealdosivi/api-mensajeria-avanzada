@@ -1,55 +1,55 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.mensajeria.api.avanzada.Model;
 
-/**
- *
- * @author fefe
- */
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+@Entity
+@Table(name = "USUARIOS")
 public class Usuario {
-    
-    private int id;
-    private static int nextid = 0;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDUSUARIO")
+    private Integer id;
+
+    @NotBlank
+    @Column(name = "NOMBRE")
     private String nombre;
+
+    @NotBlank
+    @Column(name = "APELLIDO")
     private String apellido;
+
+    @Email
+    @NotBlank
+    @Column(name = "EMAIL", unique = true)
     private String email;
+
+    @NotBlank
+    @Column(name = "PASSWORD")
     private String password;
+
+    @Column(name = "NICKNAME")
     private String nickName;
     
     public Usuario() {
-        id = nextid++;
-        nombre = "";
-        apellido="";
-        email="";
-        password="";
-        nickName="";
     }
-    
-    public Usuario(String nombre,String apellido,String email,String password,String nickName){
-        this.nombre=nombre;
-        this.apellido=apellido;
-        this.email=email;
-        this.password=password;
-        this.nickName=nickName;
+
+    public Usuario(String nombre, String apellido, String email, String password, String nickName) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
     }
-    
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public static int getNextid() {
-        return nextid;
-    }
-
-    public static void setNextid(int nextid) {
-        Usuario.nextid = nextid;
     }
 
     public String getNombre() {

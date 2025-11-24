@@ -1,40 +1,58 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.mensajeria.api.avanzada.Model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author fefe
- */
+@Entity
+@Table(name = "MENSAJES")
 public class Mensaje {
-    
-    
-    private int id;
-    private static int nextid = 0;
-    String asunto;
-    Usuario remitente;
-    ArrayList<Usuario> destinatarios;
-    String body;
-    
-    public Mensaje()
-    {
-        id = nextid++;
-        asunto="";
-        remitente = new Usuario();
-        destinatarios= new ArrayList<Usuario>();
-        body="";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IDMENSAJE")
+    private Integer id;
+
+    @NotBlank
+    @Column(name = "ASUNTO")
+    private String asunto;
+
+    @ManyToOne
+    @JoinColumn(name = "IDREMITENTE", nullable = false)
+    private Usuario remitente;
+
+    @ManyToMany
+    @JoinTable(
+        name = "MENSAJE_DESTINATARIOS",
+        joinColumns = @JoinColumn(name = "IDMENSAJE"),
+        inverseJoinColumns = @JoinColumn(name = "IDUSUARIO")
+    )
+    private List<Usuario> destinatarios = new ArrayList<>();
+
+    @Column(name = "CUERPO", columnDefinition = "TEXT")
+    private String body;
+
+    @Column(name = "FECHA_ENVIO")
+    private LocalDateTime fechaEnvio;
+
+    public Mensaje() {
+        this.fechaEnvio = LocalDateTime.now();
     }
-    
-    public int getId() {
+
+    public Mensaje(String asunto, Usuario remitente, String body) {
+        this.asunto = asunto;
+        this.remitente = remitente;
+        this.body = body;
+        this.fechaEnvio = LocalDateTime.now();
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -54,11 +72,11 @@ public class Mensaje {
         this.remitente = remitente;
     }
 
-    public ArrayList<Usuario> getDestinatarios() {
+    public List<Usuario> getDestinatarios() {
         return destinatarios;
     }
 
-    public void setDestinatarios(ArrayList<Usuario> destinatarios) {
+    public void setDestinatarios(List<Usuario> destinatarios) {
         this.destinatarios = destinatarios;
     }
 
@@ -70,4 +88,11 @@ public class Mensaje {
         this.body = body;
     }
 
+    public LocalDateTime getFechaEnvio() {
+        return fechaEnvio;
+    }
+
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
 }
